@@ -27,10 +27,25 @@ namespace APIDiemThi.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Nhận danh sách lớp - Không cần role
+        /// </summary>
+        /// <param name="kw"> Nhập từ khoá để tìm kiếm tên lớp </param>
+        /// <remarks>
+        /// Chú thích:
+        ///
+        ///     
+        ///     {
+        ///        "PageNumber": "Số trang cần xem",
+        ///        "PageSize": "Số lượt đối tượng trong 1 trang"
+        ///     }
+        ///
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Trả về danh sách lớp</response>
         [HttpGet]
         [AllowAnonymous]
         [ProducesResponseType(200, Type = typeof(List<ClassesViewDto>))]
-        [ProducesResponseType(400)]
         public IActionResult GetClassess([FromQuery] PageParamers ownerParameters, [FromQuery(Name = "kw")] string kw)
         {
             var objList =  _Classes.GetClassess(kw, ownerParameters);
@@ -55,10 +70,17 @@ namespace APIDiemThi.Controllers
             return Ok(objDto);
         }
 
+
+        /// <summary>
+        /// Xem thông tin chi tiết lớp học - Không cần role
+        /// </summary>
+        /// <param name="ClassesId"> Nhập Id để xem thông tin chi tiết lớp học </param>
+        /// <returns></returns>
+        /// <response code="200">Trả về chi tiết lớp học</response> 
+        /// <response code="404">Trả về nếu tìm không thấy</response> 
         [HttpGet("{ClassesId:int}", Name = "GetClasses")]
-        [Authorize]
+        [AllowAnonymous]
         [ProducesResponseType(200, Type = typeof(ClassesViewDto))]
-        [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesDefaultResponseType]
         public IActionResult GetClasses(int ClassesId)
@@ -73,7 +95,13 @@ namespace APIDiemThi.Controllers
             return Ok(objDto);
         }
 
-
+        /// <summary>
+        /// Tạo lớp học - role = Admin
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="201">Trả về tạo thành công</response> 
+        /// <response code="404">Trả về nếu không tạo được</response> 
+        /// <response code="500">Trả về nếu không tạo được</response>
         [HttpPost]
         [Authorize(Roles = "admin")]
         [ProducesResponseType(201, Type = typeof(ClassesCreateDto))]
@@ -94,10 +122,10 @@ namespace APIDiemThi.Controllers
                 return StatusCode(404, ModelState);
             }
 
-            /*if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }*/
+            //if (!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
 
             var ClassesObj = _mapper.Map<Classes>(ClassesCreateDto);
             if (!_Classes.CreateClasses(ClassesObj))
@@ -108,10 +136,19 @@ namespace APIDiemThi.Controllers
 
             return CreatedAtRoute("GetClasses", new { ClassesId = ClassesObj.Id }, ClassesObj);
         }
+
+        /// <summary>
+        /// Chỉnh sửa lớp học - role = Admin
+        /// </summary>
+        /// <param name="ClassesId"> Nhập Id để sửa lớp học </param>
+        /// <returns></returns>
+        /// <response code="204">Trả về sửa thành công</response> 
+        /// <response code="404">Trả về nếu không sửa được</response> 
+        /// <response code="500">Trả về nếu không sửa được</response>
         [HttpPatch("{ClassesId:int}", Name = "UpdateClasses")]
         [Authorize(Roles = "admin")]
         [ProducesResponseType(204)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult UpdateClasses(int ClassesId, [FromBody] ClassesUpdateDto ClassesUpdateDto)
         {
@@ -134,6 +171,15 @@ namespace APIDiemThi.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Xoá lớp học - role = Admin
+        /// </summary>
+        /// <param name="ClassesId"> Nhập Id để xoá lớp học </param>
+        /// <returns></returns>
+        /// <response code="204">Trả về xoá thành công</response> 
+        /// <response code="404">Trả về nếu không xoá được</response> 
+        /// <response code="404">Trả về nếu xoá bị xung đột=</response> 
+        /// <response code="500">Trả về nếu không xoá được</response>
         [HttpDelete("{ClassesId:int}", Name = "DeleteClasses")]
         [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

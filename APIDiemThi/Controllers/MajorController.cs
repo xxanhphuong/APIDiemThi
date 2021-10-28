@@ -27,10 +27,25 @@ namespace APIDiemThi.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Nhận danh sách ngành học - Không cần role
+        /// </summary>
+        /// <param name="kw"> Nhập từ khoá để tìm kiếm tên ngành </param>
+        /// <remarks>
+        /// Chú thích:
+        ///
+        ///     
+        ///     {
+        ///        "PageNumber": "Số trang cần xem",
+        ///        "PageSize": "Số lượt đối tượng trong 1 trang"
+        ///     }
+        ///
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Trả về danh sách ngành</response>            
         [HttpGet]
         [AllowAnonymous]
         [ProducesResponseType(200, Type = typeof(List<MajorViewDto>))]
-        [ProducesResponseType(400)]
         public IActionResult GetMajors([FromQuery] PageParamers ownerParameters, [FromQuery(Name = "kw")] string kw)
         {
             var objList = _major.GetMajors(kw, ownerParameters);
@@ -57,9 +72,15 @@ namespace APIDiemThi.Controllers
             return Ok(objDto);
         }
 
+        /// <summary>
+        /// Xem thông tin chi tiết ngành học - Không cần role
+        /// </summary>
+        /// <param name="majorId"> Nhập Id để xem thông tin chi tiết ngành học </param>
+        /// <returns></returns>
+        /// <response code="200">Trả về chi tiết ngành</response> 
+        /// <response code="404">Trả về nếu tìm không thấy</response>       
         [HttpGet("{majorId:int}", Name = "GetMajor")]
         [ProducesResponseType(200, Type = typeof(MajorViewDto))]
-        [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesDefaultResponseType]
         public IActionResult GetMajor(int majorId)
@@ -74,7 +95,13 @@ namespace APIDiemThi.Controllers
             return Ok(objDto);
         }
 
-
+        /// <summary>
+        /// Tạo ngành học - role = Admin
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="201">Trả về chi tiết ngành vừa tạo</response> 
+        /// <response code="404">Trả về nếu không tạo được</response> 
+        /// <response code="500">Trả về nếu không tạo được</response>
         [HttpPost]
         [ProducesResponseType(201, Type = typeof(MajorCreateDto))]
         [ProducesResponseType(StatusCodes.Status201Created)]
@@ -109,10 +136,17 @@ namespace APIDiemThi.Controllers
             return CreatedAtRoute("GetMajor", new { majorId = majorObj.Id }, majorObj);
         }
 
-
+        /// <summary>
+        /// Chỉnh sửa ngành học - role = Admin
+        /// </summary>
+        /// <param name="MajorId"> Nhập Id để sửa lớp học </param>
+        /// <returns></returns>
+        /// <response code="204">Trả về sửa thành công</response> 
+        /// <response code="404">Trả về nếu không sửa được</response> 
+        /// <response code="500">Trả về nếu không sửa được</response>
         [HttpPatch("{MajorId:int}", Name = "UpdateMajor")]
         [ProducesResponseType(204)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult UpdateMajor(int MajorId, [FromBody] MajorUpdateDto MajorUpdateDto)
         {

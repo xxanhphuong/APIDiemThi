@@ -4,5 +4,168 @@
         <name>APIDiemThi</name>
     </assembly>
     <members>
+        <member name="M:APIDiemThi.Controllers.ClassesController.GetClassess(APIDiemThi.Helpers.PageParamers,System.String)">
+             <summary>
+             Nhận danh sách lớp - Không cần role
+             </summary>
+             <param name="kw"> Nhập từ khoá để tìm kiếm tên lớp </param>
+             <remarks>
+             Chú thích:
+            
+                 
+                 {
+                    "PageNumber": "Số trang cần xem",
+                    "PageSize": "Số lượt đối tượng trong 1 trang"
+                 }
+            
+             </remarks>
+             <returns></returns>
+             <response code="200">Trả về danh sách lớp</response>
+        </member>
+        <member name="M:APIDiemThi.Controllers.ClassesController.GetClasses(System.Int32)">
+            <summary>
+            Xem thông tin chi tiết lớp học - Không cần role
+            </summary>
+            <param name="ClassesId"> Nhập Id để xem thông tin chi tiết lớp học </param>
+            <returns></returns>
+            <response code="200">Trả về chi tiết lớp học</response> 
+            <response code="404">Trả về nếu tìm không thấy</response> 
+        </member>
+        <member name="M:APIDiemThi.Controllers.ClassesController.CreateClasses(APIDiemThi.Models.Dtos.ClassesDto.ClassesCreateDto)">
+            <summary>
+            Tạo lớp học - role = Admin
+            </summary>
+            <returns></returns>
+            <response code="201">Trả về tạo thành công</response> 
+            <response code="404">Trả về nếu không tạo được</response> 
+            <response code="500">Trả về nếu không tạo được</response>
+        </member>
+        <member name="M:APIDiemThi.Controllers.ClassesController.UpdateClasses(System.Int32,APIDiemThi.Models.Dtos.ClassesDto.ClassesUpdateDto)">
+            <summary>
+            Chỉnh sửa lớp học - role = Admin
+            </summary>
+            <param name="ClassesId"> Nhập Id để sửa lớp học </param>
+            <returns></returns>
+            <response code="204">Trả về sửa thành công</response> 
+            <response code="404">Trả về nếu không sửa được</response> 
+            <response code="500">Trả về nếu không sửa được</response>
+        </member>
+        <member name="M:APIDiemThi.Controllers.ClassesController.DeleteClasses(System.Int32)">
+            <summary>
+            Xoá lớp học - role = Admin
+            </summary>
+            <param name="ClassesId"> Nhập Id để xoá lớp học </param>
+            <returns></returns>
+            <response code="204">Trả về xoá thành công</response> 
+            <response code="404">Trả về nếu không xoá được</response> 
+            <response code="404">Trả về nếu xoá bị xung đột=</response> 
+            <response code="500">Trả về nếu không xoá được</response>
+        </member>
+        <member name="M:APIDiemThi.Controllers.MajorController.GetMajors(APIDiemThi.Helpers.PageParamers,System.String)">
+             <summary>
+             Nhận danh sách ngành học - Không cần role
+             </summary>
+             <param name="kw"> Nhập từ khoá để tìm kiếm tên ngành </param>
+             <remarks>
+             Chú thích:
+            
+                 
+                 {
+                    "PageNumber": "Số trang cần xem",
+                    "PageSize": "Số lượt đối tượng trong 1 trang"
+                 }
+            
+             </remarks>
+             <returns></returns>
+             <response code="200">Trả về danh sách ngành</response>            
+        </member>
+        <member name="M:APIDiemThi.Controllers.MajorController.GetMajor(System.Int32)">
+            <summary>
+            Xem thông tin chi tiết ngành học - Không cần role
+            </summary>
+            <param name="majorId"> Nhập Id để xem thông tin chi tiết ngành học </param>
+            <returns></returns>
+            <response code="200">Trả về chi tiết ngành</response> 
+            <response code="404">Trả về nếu tìm không thấy</response>       
+        </member>
+        <member name="M:APIDiemThi.Controllers.MajorController.CreateMajor(APIDiemThi.Models.Dtos.MajorDto.MajorCreateDto)">
+            <summary>
+            Tạo ngành học - role = Admin
+            </summary>
+            <returns></returns>
+            <response code="201">Trả về chi tiết ngành vừa tạo</response> 
+            <response code="404">Trả về nếu không tạo được</response> 
+            <response code="500">Trả về nếu không tạo được</response>
+        </member>
+        <member name="M:APIDiemThi.Controllers.MajorController.UpdateMajor(System.Int32,APIDiemThi.Models.Dtos.MajorDto.MajorUpdateDto)">
+            <summary>
+            Chỉnh sửa ngành học - role = Admin
+            </summary>
+            <param name="MajorId"> Nhập Id để sửa lớp học </param>
+            <returns></returns>
+            <response code="204">Trả về sửa thành công</response> 
+            <response code="404">Trả về nếu không sửa được</response> 
+            <response code="500">Trả về nếu không sửa được</response>
+        </member>
+        <member name="M:APIDiemThi.Controllers.ScoreController.GetScores(APIDiemThi.Helpers.PageParamers,System.String)">
+             <summary>
+             Nhận danh sách điểm - Không cần role
+             </summary>
+             <param name="studentId"> Nhập mã sinh viên để lấy danh sách điểm của sinh viên đó </param>=
+             <remarks>
+             Chú thích:
+            
+                 
+                 {
+                    "PageNumber": "Số trang cần xem",
+                    "PageSize": "Số lượt đối tượng trong 1 trang"
+                 }
+            
+             </remarks>
+             <returns></returns>
+             <response code="200">Trả về danh sách lớp</response>
+        </member>
+        <member name="M:APIDiemThi.Controllers.ScoreController.GetScore(System.Int32,System.Int32)">
+            <summary>
+            Xem thông tin chi tiết điểm - Không cần role
+            </summary>
+            <param name="studentId"> Nhập Id sin viên để xem thông tin chi tiết điểm </param>
+            <param name="subjectId"> Nhập Id môn học để xem thông tin chi tiết điểm </param>
+            <returns></returns>
+            <response code="200">Trả về chi tiết lớp học</response> 
+            <response code="404">Trả về nếu tìm không thấy</response> 
+        </member>
+        <member name="M:APIDiemThi.Controllers.ScoreController.CreateScore(APIDiemThi.Models.Dtos.ScoreDto.ScoreCreateDto)">
+            <summary>
+            Tạo điểm - role = Admin, Teacher
+            </summary>
+            <returns></returns>
+            <response code="201">Trả về tạo thành công</response> 
+            <response code="404">Trả về nếu không tạo được</response> 
+            <response code="500">Trả về nếu không tạo được</response>
+        </member>
+        <member name="M:APIDiemThi.Controllers.ScoreController.UpdateScore(System.Int32,System.Int32,APIDiemThi.Models.Dtos.ScoreDto.ScoreUpdateDto)">
+            <summary>
+            Chỉnh sửa điểm - role = Admin, teacher
+            </summary>
+            <param name="studentId"> Nhập Id sinh viên để sửa thông tin điểm </param>
+            <param name="subjectId"> Nhập Id môn học để sửa thông tin điểm </param>
+            <returns></returns>
+            <response code="204">Trả về sửa thành công</response> 
+            <response code="404">Trả về nếu không sửa được</response> 
+            <response code="500">Trả về nếu không sửa được</response>
+        </member>
+        <member name="M:APIDiemThi.Controllers.ScoreController.DeleteScore(System.Int32,System.Int32)">
+            <summary>
+            Xoá lớp học - role = Admin, teacher
+            </summary>
+            <param name="studentId"> Nhập Id sinh viên để xoá thông tin điểm </param>
+            <param name="subjectId"> Nhập Id môn học để xoá thông tin điểm </param>
+            <returns></returns>
+            <response code="204">Trả về xoá thành công</response> 
+            <response code="404">Trả về nếu không xoá được</response> 
+            <response code="404">Trả về nếu xoá bị xung đột=</response> 
+            <response code="500">Trả về nếu không xoá được</response>
+        </member>
     </members>
 </doc>

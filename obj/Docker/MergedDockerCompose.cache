@@ -1,0 +1,44 @@
+services:
+  apidiemthi:
+    build:
+      context: .
+      dockerfile: APIDiemThi/Dockerfile
+    depends_on:
+      db:
+        condition: service_started
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: https://+:443;http://+:80
+    image: apidiemthi
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 80
+      protocol: tcp
+    - mode: ingress
+      target: 443
+      protocol: tcp
+    volumes:
+    - type: bind
+      source: C:\Users\MSIGE66\AppData\Roaming/Microsoft/UserSecrets
+      target: /root/.microsoft/usersecrets
+      read_only: true
+      bind:
+        create_host_path: true
+    - type: bind
+      source: C:\Users\MSIGE66\AppData\Roaming/ASP.NET/Https
+      target: /root/.aspnet/https
+      read_only: true
+      bind:
+        create_host_path: true
+  db:
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: 1Secure*Password1
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    networks:
+      default: null
+networks:
+  default:
+    name: dockercompose6584936891847166257_default

@@ -31,7 +31,8 @@ namespace APIDiemThi.Controllers
         /// <summary>
         /// Nhận danh sách điểm - Không cần role
         /// </summary>
-        /// <param name="studentId"> Nhập mã sinh viên để lấy danh sách điểm của sinh viên đó </param>=
+        /// <param name="studentId"> Nhập mã sinh viên để lấy danh sách điểm của sinh viên đó </param>
+        /// <param name="ownerParameters"> Nhập từ khoá để tìm kiếm tên lớp </param>
         /// <remarks>
         /// Chú thích:
         ///
@@ -147,6 +148,7 @@ namespace APIDiemThi.Controllers
         /// </summary>
         /// <param name="studentId"> Nhập Id sinh viên để sửa thông tin điểm </param>
         /// <param name="subjectId"> Nhập Id môn học để sửa thông tin điểm </param>
+        /// <param name="ScoreUpdateDto"> Nhập Id môn học để sửa thông tin điểm </param>
         /// <returns></returns>
         /// <response code="204">Trả về sửa thành công</response> 
         /// <response code="404">Trả về nếu không sửa được</response> 

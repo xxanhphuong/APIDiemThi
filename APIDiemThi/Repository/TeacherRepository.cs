@@ -17,16 +17,16 @@ namespace APIDiemThi.Repository
         {
             _context = context;
         }
-        public bool CreateTeacher(Teacher Teacher)
+        public async Task<bool> CreateTeacher(Teacher Teacher)
         {
             _context.Teacher.Add(Teacher);
-            return Save();
+            return await Save();
         }
 
-        public bool DeleteTeacher(Teacher Teacher)
+        public async Task<bool> DeleteTeacher(Teacher Teacher)
         {
             _context.Teacher.Remove(Teacher);
-            return Save();
+            return await Save();
         }
 
         public Teacher GetTeacher(int TeacherId)
@@ -47,9 +47,9 @@ namespace APIDiemThi.Repository
                     ownerParameters.PageSize);
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
-            return _context.SaveChanges() >= 0;
+            return await _context.SaveChangesAsync() >= 0;
         }
 
         public bool TeacherExists(int id)
@@ -58,10 +58,10 @@ namespace APIDiemThi.Repository
             return value;
         }
 
-        public bool UpdateTeacher(Teacher Teacher)
+        public async Task<bool> UpdateTeacher(Teacher Teacher)
         {
             _context.Teacher.Update(Teacher);
-            return Save();
+            return await Save();
         }
     }
 }

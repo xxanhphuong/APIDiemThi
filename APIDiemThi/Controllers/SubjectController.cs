@@ -4,6 +4,7 @@ using APIDiemThi.Models;
 using APIDiemThi.Models.Dtos.SubjectDto;
 using APIDiemThi.Repository.IRepository;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -27,9 +28,26 @@ namespace APIDiemThi.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// Nhận danh sách môn học - Không cần role
+        /// </summary>
+        /// <param name="kw"> Nhập từ khoá để tìm kiếm tên môn học </param>
+        /// <param name="ownerParameters"> Nhập từ khoá để tìm kiếm tên môn học </param>
+        /// <remarks>
+        /// Chú thích:
+        ///
+        ///     
+        ///     {
+        ///        "PageNumber": "Số trang cần xem",
+        ///        "PageSize": "Số lượt đối tượng trong 1 trang"
+        ///     }
+        ///
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Trả về danh sách môn học</response>
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType(200, Type = typeof(List<SubjectViewDto>))]
-        [ProducesResponseType(400)]
         public IActionResult GetSubjects([FromQuery] PageParamers ownerParameters, [FromQuery(Name = "kw")] string kw)
         {
             var objList = _subject.GetSubjects(kw, ownerParameters);
@@ -53,7 +71,15 @@ namespace APIDiemThi.Controllers
             return Ok(objDto);
         }
 
+        /// <summary>
+        /// Xem thông tin chi tiết môn học - Không cần role
+        /// </summary>
+        /// <param name="subjectId"> Nhập Id để xem thông tin chi tiết môn học </param>
+        /// <returns></returns>
+        /// <response code="200">Trả về chi tiết môn học</response> 
+        /// <response code="404">Trả về nếu tìm không thấy</response> 
         [HttpGet("{subjectId:int}", Name = "GetSubject")]
+        [AllowAnonymous]
         [ProducesResponseType(200, Type = typeof(SubjectViewDto))]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
@@ -70,8 +96,15 @@ namespace APIDiemThi.Controllers
             return Ok(objDto);
         }
 
-
+        /// <summary>
+        /// Tạo môn học - role = Admin
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="201">Trả về tạo môn thành công</response> 
+        /// <response code="404">Trả về nếu không tạo được</response> 
+        /// <response code="500">Trả về nếu không tạo được</response>
         [HttpPost]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(201, Type = typeof(SubjectCreateDto))]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -105,8 +138,17 @@ namespace APIDiemThi.Controllers
             return CreatedAtRoute("GetSubject", new { subjectId = subjectObj.Id }, subjectObj);
         }
 
-
+        /// <summary>
+        /// Chỉnh sửa môn học - role = Admin
+        /// </summary>
+        /// <param name="SubjectId"> Nhập Id để sửa môn học </param>
+        /// <param name="SubjectUpdateDto"> Nhập Id để sửa môn học </param>
+        /// <returns></returns>
+        /// <response code="204">Trả về sửa thành công</response> 
+        /// <response code="404">Trả về nếu không sửa được</response> 
+        /// <response code="500">Trả về nếu không sửa được</response>
         [HttpPatch("{SubjectId:int}", Name = "UpdateSubject")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(204)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -131,7 +173,17 @@ namespace APIDiemThi.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Xoá môn học - role = Admin
+        /// </summary>
+        /// <param name="SubjectId"> Nhập Id để xoá môn học </param>
+        /// <returns></returns>
+        /// <response code="204">Trả về xoá thành công</response> 
+        /// <response code="404">Trả về nếu không xoá được</response> 
+        /// <response code="404">Trả về nếu xoá bị xung đột=</response> 
+        /// <response code="500">Trả về nếu không xoá được</response>
         [HttpDelete("{SubjectId:int}", Name = "DeleteSubject")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]

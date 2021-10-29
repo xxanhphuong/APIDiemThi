@@ -31,6 +31,7 @@ namespace APIDiemThi.Controllers
         /// Nhận danh sách ngành học - Không cần role
         /// </summary>
         /// <param name="kw"> Nhập từ khoá để tìm kiếm tên ngành </param>
+        /// <param name="ownerParameters"> Nhập từ khoá để tìm kiếm tên lớp </param>
         /// <remarks>
         /// Chú thích:
         ///
@@ -140,6 +141,7 @@ namespace APIDiemThi.Controllers
         /// Chỉnh sửa ngành học - role = Admin
         /// </summary>
         /// <param name="MajorId"> Nhập Id để sửa lớp học </param>
+        /// <param name="MajorUpdateDto"> Nhập Id để sửa lớp học </param>
         /// <returns></returns>
         /// <response code="204">Trả về sửa thành công</response> 
         /// <response code="404">Trả về nếu không sửa được</response> 

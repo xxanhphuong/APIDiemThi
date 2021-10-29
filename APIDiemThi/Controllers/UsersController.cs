@@ -11,6 +11,7 @@ using AutoMapper;
 using APIDiemThi.Models.Dtos.UserDto;
 using APIDiemThi.Helpers;
 using Newtonsoft.Json;
+using APIDiemThi.Models.Dtos.TeacherDto;
 
 namespace APIDiemThi.Controllers
 {
@@ -20,15 +21,23 @@ namespace APIDiemThi.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserRepository _userRepo;
+        private readonly ITeacherRepository _teacher;
+        private readonly IStudentRepository _student;
         private readonly IMapper _mapper;
-        public UsersController(IUserRepository userRepo, IMapper mapper)
+        public UsersController(IUserRepository userRepo, IMapper mapper, ITeacherRepository teacher, IStudentRepository student)
         {
             _userRepo = userRepo;
             _mapper = mapper;
+            _teacher = teacher;
+            _student = student;
         }
 
-        [AllowAnonymous]
+        /// <summary>
+        /// Đăng nhập user - Không cần role
+        /// </summary>
+        /// <returns></returns>
         [HttpPost("authenticate")]
+        [AllowAnonymous]
         public IActionResult Authenticate([FromBody] AuthenticationModel model)
         {
             var user = _userRepo.Authenticate(model.Username, model.Password);
@@ -40,29 +49,45 @@ namespace APIDiemThi.Controllers
             return Ok(objDto);
         }
 
-        [AllowAnonymous]
-        [HttpPost("register")]
-        public IActionResult Register([FromBody] AuthenticationModel model)
-        {
-            bool ifUserNameUnique = _userRepo.IsUniqueUser(model.Username);
-            if (!ifUserNameUnique)
-            {
-                return BadRequest(new { message = "Username already exists" });
-            }
-            var user = _userRepo.Register(model.Username, model.Password);
+        //[AllowAnonymous]
+        //[HttpPost("register")]
+        //public IActionResult Register([FromBody] AuthenticationModel model)
+        //{
+        //    bool ifUserNameUnique = _userRepo.IsUniqueUser(model.Username);
+        //    if (!ifUserNameUnique)
+        //    {
+        //        return BadRequest(new { message = "Username already exists" });
+        //    }
+        //    var user = _userRepo.Register(model.Username, model.Password);
 
-            if (user == null)
-            {
-                return BadRequest(new { message = "Error while registering" });
-            }
+        //    if (user == null)
+        //    {
+        //        return BadRequest(new { message = "Error while registering" });
+        //    }
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
+        /// <summary>
+        /// Nhận danh sách người dùng - role = admin
+        /// </summary>
+        /// <param name="kw"> Nhập từ khoá để tìm kiếm tên người dùng </param>
+        /// <param name="ownerParameters"> Nhập từ khoá để tìm kiếm tên người dùng </param>
+        /// <remarks>
+        /// Chú thích:
+        ///
+        ///     
+        ///     {
+        ///        "PageNumber": "Số trang cần xem",
+        ///        "PageSize": "Số lượt đối tượng trong 1 trang"
+        ///     }
+        ///
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Trả về danh sách người dùng</response>
         [HttpGet(Name = "GetUsers")]
         [Authorize(Roles = "admin")]
         [ProducesResponseType(200, Type = typeof(List<UserViewDto>))]
-        [ProducesResponseType(400)]
         public IActionResult GetUsers([FromQuery] PageParamers ownerParameters, [FromQuery(Name = "kw")] string kw)
         {
             var objList = _userRepo.GetUsers(kw, ownerParameters);
@@ -86,11 +111,16 @@ namespace APIDiemThi.Controllers
             return Ok(objDto);
         }
 
-
+        /// <summary>
+        /// Xem thông tin chi tiết người dùng - cần có 1 trong 3 phân quyền
+        /// </summary>
+        /// <param name="userId"> Nhập Id sinh viên để xem thông tin chi tiết người dùng </param>
+        /// <returns></returns>
+        /// <response code="200">Trả về chi tiết người dùng</response> 
+        /// <response code="404">Trả về nếu tìm không thấy</response>
         [HttpGet("{userId:int}", Name = "GetUser")]
         [Authorize]
         [ProducesResponseType(200, Type = typeof(UserViewDto))]
-        [ProducesResponseType(400)]
         [ProducesResponseType(404)]
         [ProducesDefaultResponseType]
         public IActionResult GetUser(int userId)
@@ -105,7 +135,13 @@ namespace APIDiemThi.Controllers
             return Ok(objDto);
         }
 
-
+        /// <summary>
+        /// Tạo người dùng - role = Admin, khi tạo thì role chỉ được trong 3 loại(admin, teacher, student)
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="201">Trả về tạo thành công</response> 
+        /// <response code="404">Trả về nếu không tạo được</response> 
+        /// <response code="500">Trả về nếu không tạo được</response>
         [HttpPost]
         [Authorize(Roles = "admin")]
         [ProducesResponseType(201, Type = typeof(UserCreateDto))]
@@ -113,7 +149,7 @@ namespace APIDiemThi.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesDefaultResponseType]
-        public IActionResult CreateUser([FromBody] UserCreateDto userCreateDto)
+        public async Task<IActionResult> CreateUser([FromBody] UserCreateDto userCreateDto)
         {
             if (userCreateDto == null)
             {
@@ -126,28 +162,62 @@ namespace APIDiemThi.Controllers
                 return StatusCode(404, ModelState);
             }
 
+            
+
             /*if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }*/
 
             var userObj = _mapper.Map<Users>(userCreateDto);
-            if (!_userRepo.CreateUser(userObj))
+            if (!await _userRepo.CreateUser(userObj))
             {
                 ModelState.AddModelError("", $"Something went wrong when saving the record {userObj.Username}");
                 return StatusCode(500, ModelState);
             }
 
+            if (userCreateDto.Role == "teacher")
+            {
+                int idUser = await _userRepo.GetIdUser(userCreateDto.Username);
+                Teacher tea = new Teacher();
+                tea.TeacherId = idUser;
+                if (!await _teacher.CreateTeacher(tea))
+                {
+                    ModelState.AddModelError("", $"Something went wrong when creat Teacher");
+                    return StatusCode(500, ModelState);
+                }
+            }
+
+            if (userCreateDto.Role == "student")
+            {
+                int idUser = await _userRepo.GetIdUser(userCreateDto.Username);
+                Student stu = new Student();
+                stu.StudentId = idUser;
+                if (!await _student.CreateStudent(stu))
+                {
+                    ModelState.AddModelError("", $"Something went wrong when creat Student");
+                    return StatusCode(500, ModelState);
+                }
+            }
+
             return CreatedAtRoute("GetUser", new { userId = userObj.Id }, userObj);
         }
 
-
+        /// <summary>
+        /// Chỉnh sửa user - role = Admin
+        /// </summary>
+        /// <param name="userId"> Nhập Id để sửa user </param>
+        /// <param name="userUpdateDto"> Nhập từ khoá để tìm kiếm user </param>
+        /// <returns></returns>
+        /// <response code="204">Trả về sửa thành công</response> 
+        /// <response code="404">Trả về nếu không sửa được</response> 
+        /// <response code="500">Trả về nếu không sửa được</response>
         [HttpPatch("{userId:int}", Name = "UpdateUser")]
         [Authorize(Roles = "admin")]
         [ProducesResponseType(204)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult UpdateUser(int userId, [FromBody] UserUpdateDto userUpdateDto)
+        public async Task<IActionResult> UpdateUser(int userId, [FromBody] UserUpdateDto userUpdateDto)
         {
             if (userUpdateDto == null || userId != userUpdateDto.Id)
             {
@@ -158,7 +228,7 @@ namespace APIDiemThi.Controllers
                 return NotFound();
             }
             var userObj = _mapper.Map<Users>(userUpdateDto);
-            if (!_userRepo.UpdateUser(userObj))
+            if (!await _userRepo.UpdateUser(userObj))
             {
                 ModelState.AddModelError("", $"Something went wrong when updating the record {userObj.Username}");
                 return StatusCode(500, ModelState);
@@ -167,13 +237,22 @@ namespace APIDiemThi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{userId:int}", Name = "DeleteMajor")]
+        /// <summary>
+        /// Xoá user - role = Admin
+        /// </summary>
+        /// <param name="userId"> Nhập Id để xoá user </param>
+        /// <returns></returns>
+        /// <response code="204">Trả về xoá thành công</response> 
+        /// <response code="404">Trả về nếu không xoá được</response> 
+        /// <response code="404">Trả về nếu xoá bị xung đột</response> 
+        /// <response code="500">Trả về nếu không xoá được</response>
+        [HttpDelete("{userId:int}", Name = "DeleteUser")]
         [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        public IActionResult DeleteMajor(int userId)
+        public async Task<IActionResult> DeleteMajor(int userId)
         {
             if (!_userRepo.UserExists(userId))
             {
@@ -181,7 +260,7 @@ namespace APIDiemThi.Controllers
             }
 
             var userObj = _userRepo.GetUser(userId);
-            if (!_userRepo.DeleteUser(userObj))
+            if (!await _userRepo.DeleteUser(userObj))
             {
                 ModelState.AddModelError("", $"Something went wrong when deleting the record {userObj.Username }");
                 return StatusCode(500, ModelState);

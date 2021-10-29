@@ -12,9 +12,9 @@ namespace APIDiemThi.Repository.IRepository
         PagedList<Teacher> GetTeachers(string kw, PageParamers ownerParameters);
         Teacher GetTeacher(int TeacherId);
         bool TeacherExists(int id);
-        bool CreateTeacher(Teacher Teacher);
-        bool UpdateTeacher(Teacher Teacher);
-        bool DeleteTeacher(Teacher Teacher);
-        bool Save();
+        Task<bool> CreateTeacher(Teacher Teacher);
+        Task<bool> UpdateTeacher(Teacher Teacher);
+        Task<bool> DeleteTeacher(Teacher Teacher);
+        Task<bool> Save();
     }
 }

@@ -13,6 +13,7 @@ using APIDiemThi.Models;
 using System.Security.Cryptography;
 using System.IO;
 using APIDiemThi.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace APIDiemThi.Repository
 {
@@ -103,17 +104,17 @@ namespace APIDiemThi.Repository
             return user;
         }
 
-        public bool CreateUser(Users User)
+        public async Task<bool> CreateUser(Users User)
         {
             User.Password = Encrypt(User.Password);
             _db.Users.Add(User);
-            return Save();
+            return await Save();
         }
 
-        public bool DeleteUser(Users User)
+        public async Task<bool> DeleteUser(Users User)
         {
             _db.Users.Remove(User);
-            return Save();
+            return await Save();
         }
 
         public Users GetUser(int UserId)
@@ -160,15 +161,15 @@ namespace APIDiemThi.Repository
             return userObj;
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
-            return _db.SaveChanges() >= 0;
+            return await _db.SaveChangesAsync() >= 0;
         }
 
-        public bool UpdateUser(Users User)
+        public async Task<bool> UpdateUser(Users User)
         {
             _db.Users.Update(User);
-            return Save();
+            return await Save();
         }
 
         public bool UserExists(string username)
@@ -181,6 +182,12 @@ namespace APIDiemThi.Repository
         {
             bool value = _db.Users.Any(a => a.Id == userId);
             return value;
+        }
+
+        public async Task<int> GetIdUser(string username)
+        {
+            Users a = await _db.Users.FirstOrDefaultAsync(a => a.Username == username);
+            return a.Id;
         }
     }
 }

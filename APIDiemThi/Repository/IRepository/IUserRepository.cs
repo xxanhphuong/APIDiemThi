@@ -15,11 +15,12 @@ namespace APIDiemThi.Repository.IRepository
 
         PagedList<Users> GetUsers(string kw, PageParamers ownerParameters);
         Users GetUser(int UserId);
+        Task<int> GetIdUser(string username);
         bool UserExists(string username);
         bool UserExists(int userId);
-        bool CreateUser(Users User);
-        bool UpdateUser(Users User);
-        bool DeleteUser(Users User);
-        bool Save();
+        Task<bool> CreateUser(Users User);
+        Task<bool> UpdateUser(Users User);
+        Task<bool> DeleteUser(Users User);
+        Task<bool> Save();
     }
 }

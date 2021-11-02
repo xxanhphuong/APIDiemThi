@@ -20,8 +20,7 @@ namespace APIDiemThi.Models
         public Users User { get; set; }
 
         [ForeignKey("Classes")]
-        [Required]
-        public int ClassesId { get; set; }
+        public int? ClassesId { get; set; }
         public Classes Classes { get; set; }
 
         

@@ -127,8 +127,8 @@ C:\Users\MSIGE66\source\repos\APIDiemThi\APIDiemThi\obj\Debug\net5.0\APIDiemThi.
 C:\Users\MSIGE66\source\repos\APIDiemThi\APIDiemThi\obj\Debug\net5.0\APIDiemThi.genruntimeconfig.cache
 C:\Users\MSIGE66\source\repos\APIDiemThi\APIDiemThi\bin\Debug\net5.0\Microsoft.AspNetCore.Mvc.Versioning.dll
 C:\Users\MSIGE66\source\repos\APIDiemThi\APIDiemThi\bin\Debug\net5.0\Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer.dll
-C:\Users\MSIGE66\source\repos\APIDiemThi\APIDiemThi\obj\Debug\net5.0\APIDiemThi.csproj.CopyComplete
 C:\Users\MSIGE66\source\repos\APIDiemThi\APIDiemThi\bin\Debug\net5.0\Newtonsoft.Json.dll
 C:\Users\MSIGE66\source\repos\APIDiemThi\APIDiemThi\bin\Debug\net5.0\Microsoft.AspNetCore.JsonPatch.dll
 C:\Users\MSIGE66\source\repos\APIDiemThi\APIDiemThi\bin\Debug\net5.0\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 C:\Users\MSIGE66\source\repos\APIDiemThi\APIDiemThi\bin\Debug\net5.0\Newtonsoft.Json.Bson.dll
+C:\Users\MSIGE66\source\repos\APIDiemThi\APIDiemThi\obj\Debug\net5.0\APIDiemThi.csproj.CopyComplete

@@ -111,6 +111,17 @@
             <response code="404">Trả về nếu không sửa được</response> 
             <response code="500">Trả về nếu không sửa được</response>
         </member>
+        <member name="M:APIDiemThi.Controllers.MajorController.DeleteMajor(System.Int32)">
+            <summary>
+            Xoá lớp ngành - role = Admin
+            </summary>
+            <param name="majorId"> Nhập Id để xoá ngành học </param>
+            <returns></returns>
+            <response code="204">Trả về xoá thành công</response> 
+            <response code="404">Trả về nếu không xoá được</response> 
+            <response code="404">Trả về nếu xoá bị xung đột</response> 
+            <response code="500">Trả về nếu không xoá được</response>
+        </member>
         <member name="M:APIDiemThi.Controllers.ScoreController.GetScores(APIDiemThi.Helpers.PageParamers,System.String)">
              <summary>
              Nhận danh sách điểm - Không cần role

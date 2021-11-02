@@ -4,14 +4,16 @@ using APIDiemThi.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace APIDiemThi.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211101035444_addRequiredStudent")]
+    partial class addRequiredStudent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -91,7 +93,7 @@ namespace APIDiemThi.Migrations
                     b.Property<int>("StudentId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ClassesId")
+                    b.Property<int>("ClassesId")
                         .HasColumnType("int");
 
                     b.Property<int>("TypeStudent")
@@ -220,7 +222,9 @@ namespace APIDiemThi.Migrations
                 {
                     b.HasOne("APIDiemThi.Models.Classes", "Classes")
                         .WithMany("Students")
-                        .HasForeignKey("ClassesId");
+                        .HasForeignKey("ClassesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("APIDiemThi.Models.Users", "User")
                         .WithOne("Student")

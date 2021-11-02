@@ -171,26 +171,35 @@ namespace APIDiemThi.Controllers
             return NoContent();
         }
 
-        //[HttpDelete("{majorId:int}", Name = "DeleteMajor")]
-        //[ProducesResponseType(StatusCodes.Status204NoContent)]
-        //[ProducesResponseType(StatusCodes.Status404NotFound)]
-        //[ProducesResponseType(StatusCodes.Status409Conflict)]
-        //[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        //public IActionResult DeleteMajor(int majorId)
-        //{
-        //    if (!_major.MajorExists(majorId))
-        //    {
-        //        return NotFound();
-        //    }
+        /// <summary>
+        /// Xoá lớp ngành - role = Admin
+        /// </summary>
+        /// <param name="majorId"> Nhập Id để xoá ngành học </param>
+        /// <returns></returns>
+        /// <response code="204">Trả về xoá thành công</response> 
+        /// <response code="404">Trả về nếu không xoá được</response> 
+        /// <response code="404">Trả về nếu xoá bị xung đột</response> 
+        /// <response code="500">Trả về nếu không xoá được</response>
+        [HttpDelete("{majorId:int}", Name = "DeleteMajor")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public IActionResult DeleteMajor(int majorId)
+        {
+            if (!_major.MajorExists(majorId))
+            {
+                return NotFound();
+            }
 
-        //    var MajorObj = _major.GetMajor(majorId);
-        //    if (!_major.DeleteMajor(MajorObj))
-        //    {
-        //        ModelState.AddModelError("", $"Something went wrong when deleting the record {MajorObj.Name}");
-        //        return StatusCode(500, ModelState);
-        //    }
+            var MajorObj = _major.GetMajor(majorId);
+            if (!_major.DeleteMajor(MajorObj))
+            {
+                ModelState.AddModelError("", $"Something went wrong when deleting the record {MajorObj.Name}");
+                return StatusCode(500, ModelState);
+            }
 
-        //    return NoContent();
-        //}
+            return NoContent();
+        }
     }
 }

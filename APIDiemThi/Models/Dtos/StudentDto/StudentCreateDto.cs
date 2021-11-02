@@ -12,7 +12,6 @@ namespace APIDiemThi.Models.Dtos.StudentDto
         public int StudentId { get; set; }
         [Required]
         public int TypeStudent { get; set; }
-        [Required]
         public int ClassesId { get; set; }
     }
 }
